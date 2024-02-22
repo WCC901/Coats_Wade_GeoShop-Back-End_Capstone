@@ -30,8 +30,8 @@ app.post('/countries', async (req, res) => {
             attractions: req.body.attractions
         };
 
-        const country = await Country.create(newCountry);
-        return res.status(201).send(country);
+        const result = await Country.create(newCountry);
+        return res.status(201).send(result);
 
     } catch (e) {
         console.log(e.message);
@@ -39,6 +39,59 @@ app.post('/countries', async (req, res) => {
     }
 });
 
+// Get all countries
+app.get('/countries', async (req, res) => {
+    try {
+        const countries = await Country.find({});
+        return res.status(200).json({
+            totalEntries: countries.length,
+            data: countries
+        });
+    } catch (e) {
+        console.log(e.message);
+        res.status(500).send({ message: e.message });
+    }
+});
+
+// Get a country by id
+app.get('/countries/:id', async (req, res) => {
+    try {
+        const result = await Country.findById(req.params.id);
+        return res.status(200).json(result);
+    } catch (e) {
+        console.log(e.message);
+        res.status(500).send({ message: e.message });
+    }
+});
+
+// Update a country
+app.put('/countries/:id', async (req, res) => {
+    try {
+        if (!req.body.name || !req.body.currentPrice) {
+            return res.status(400).send({ message:'Send required fields' });
+        };
+
+        const result = await Country.findByIdAndUpdate(req.params.id, req.body);
+        if (!result) {
+            return res.status(404).json( {errorMessage: 'Country was not found'} );
+        }
+
+        return res.status(200).send({successMessage: "Country Updated!" });
+    } catch (e) {
+        console.log(e.message);
+        res.status(500).send({ message: e.message });
+    }
+});
+
+//Remove a country by id
+app.delete("countries/:id", async (req, res) => {
+    try {
+
+    } catch (e) {
+        console.log(e.message);
+        res.status(500).send({ message: e.message });
+    }
+});
 
 // Connect to Mongoose and send the appropriate message to the console.
 mongoose.connect(mongoURI)
