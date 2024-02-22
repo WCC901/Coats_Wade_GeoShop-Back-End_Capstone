@@ -11,6 +11,12 @@ const app = express();
 
 // Middleware for parsing through the request body
 app.use(express.json());
+// Cors middleware to allow custom origins
+app.use(cors({
+    origin: 'http://loacalhost:3000',
+    methods: ['GET', ' POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
+}));
 
 
 // Main server route
